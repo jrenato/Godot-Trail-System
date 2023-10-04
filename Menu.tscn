@@ -15,7 +15,7 @@ func _on_btn1_button_down():
 
 
 func _on_btn2_button_down():
-	get_tree().change_scene_to_file(\"res://navigation_mesh.tscn\")
+	get_tree().change_scene_to_file(\"res://navmesh.tscn\")
 
 
 func _on_btn3_button_down():
@@ -55,6 +55,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = SubResource("1")
 
 [node name="panel" type="Panel" parent="."]

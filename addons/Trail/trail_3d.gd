@@ -6,25 +6,24 @@ Email: o.boukhelf@gmail.com
 Description: Advanced 2D/3D Trail system.
 """
 
-extends ImmediateMesh
+extends Node3D
 
-
-@export(bool) 			var emit := true
-@export(float) 			var distance := 0.1
-@export(int, 0, 99999)	var segments := 20
-@export(float) 			var lifetime := 0.5
-@export var base_width := 0.5 # (float, 0, 99999)
-@export(bool)			var tiled_texture := false
-@export(int)				var tiling := 0
-@export(Curve) 			var width_profile
-@export(Gradient)		var color_gradient
-@export(int, 0, 3) 		var smoothing_iterations := 0
-@export(float, 0, 0.5) 	var smoothing_ratio := 0.25
-@export(String, "View", "Normal", "Object") 	var alignment := "View"
-@export(String, "X", "Y", "Z") 				var axe := "Y"
-@export(bool) 			var show_wireframe := false
-@export(Color) 			var wireframe_color := Color(1, 1, 1, 1)
-@export var wire_line_width := 1.0 # (float, 0, 100, 0.1)
+@export var emit : bool = true
+@export var distance: float = 0.1
+@export_range (0, 99999) var segments: int = 20
+@export var lifetime: float = 0.5
+@export var base_width: float = 0.5 # (float, 0, 99999)
+@export var tiled_texture: bool = false
+@export var tiling: int = 0
+@export var width_profile: Curve
+@export var color_gradient: Gradient
+@export_range(0, 3) var smoothing_iterations: int = 0
+@export_range(0, 0.5) var smoothing_ratio: float = 0.25
+@export_enum("View", "Normal", "Object") var alignment: String = "View"
+@export_enum("X", "Y", "Z") var axe: String = "Y"
+@export var show_wireframe: bool = false
+@export var wireframe_color: Color = Color(1, 1, 1, 1)
+@export var wire_line_width: float = 1.0 # (float, 0, 100, 0.1)
 
 var points := []
 var color := Color(1, 1, 1, 1)

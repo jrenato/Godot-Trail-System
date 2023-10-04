@@ -76,7 +76,7 @@ func _input(event):
 func _update_path():
 	var p = NavigationServer3D.map_get_path(map_rid, begin, end, true)
 	path = Array(p) # Vector3 array too complex to use, convert to regular array.
-	path.invert()
+	path.reverse()
 	set_process(true)
 
 	if draw_path:
@@ -97,7 +97,7 @@ func _update_path():
 		for i in range(p.size()):
 			var normal = NavigationServer3D.map_get_closest_point_normal(map_rid, p[i]).normalized()
 			var offset = normal*0.1
-			var _transform = Transform3D(Basis(normal), p[i]+offset)
+			var _transform = Transform3D(Basis(normal, 0), p[i]+offset)
 			get_node("RobotBase/target").add_point(_transform)
 		get_node("RobotBase/target").smooth()
 		get_node("RobotBase/target").render(true)
