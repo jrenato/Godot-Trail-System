@@ -1,6 +1,6 @@
 extends Node2D
 
-export(float) var CHARACTER_SPEED = 400.0
+@export var CHARACTER_SPEED: float = 400.0
 var path = []
 
 var map_rid
@@ -20,10 +20,10 @@ func _update_navigation_path(start_position, end_position):
 	# get_simple_path is part of the Navigation2D class
 	# it returns a PoolVector2Array of points that lead you from the
 	# start_position to the end_position
-	path = Navigation2DServer.map_get_path(map_rid, start_position, end_position, true)
+	path = NavigationServer2D.map_get_path(map_rid, start_position, end_position, true)
 	# The first point is always the start_position
 	# We don't need it in this example as it corresponds to the character's position
-	path.remove(0)
+	path.remove_at(0)
 	set_process(true)
 
 
@@ -39,13 +39,13 @@ func move_along_path(distance):
 
 		# the position to move to falls between two points
 		if distance <= distance_between_points:
-			$Character.position = last_point.linear_interpolate(path[0], distance / distance_between_points)
+			$Character.position = last_point.lerp(path[0], distance / distance_between_points)
 			return
 
 		# the position is past the end of the segment
 		distance -= distance_between_points
 		last_point = path[0]
-		path.remove(0)
+		path.remove_at(0)
 	# the character reached the end of the path
 	$Character.position = last_point
 	set_process(false)

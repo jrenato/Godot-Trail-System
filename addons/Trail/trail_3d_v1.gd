@@ -1,22 +1,22 @@
 #tool
-extends ImmediateGeometry
+extends ImmediateMesh
 
-export(bool) 			var emit = true
-export(float) 			var max_distance = 0.5
-export(int, 0, 99999)	var segments = 20
-export(float) 			var life_time = 5.0
-export(float, 0, 99999) var base_width = 1.0
-export(bool)			var tiled_texture = false
-export(int)				var tiling = 0
-export(Curve) 			var width_profile
-export(Curve) 			var width_over_time
-export(Gradient)		var color_gradient
-export(float, 0, 0.5) 	var smoothing_ratio = 0.2
-export(int, 4) 			var smoothing_iterations = 1
-export(String, "View", "Motion", "Object") 	var alignment = "View"
-export(String, "Idle", "Fixed") 			var prcess_mode = "Idle"
-export(bool) 			var show_wireframe = false
-export(Color) 			var wireframe_color = Color(1, 1, 1)
+@export(bool) 			var emit = true
+@export(float) 			var max_distance = 0.5
+@export(int, 0, 99999)	var segments = 20
+@export(float) 			var life_time = 5.0
+@export var base_width = 1.0 # (float, 0, 99999)
+@export(bool)			var tiled_texture = false
+@export(int)				var tiling = 0
+@export(Curve) 			var width_profile
+@export(Curve) 			var width_over_time
+@export(Gradient)		var color_gradient
+@export(float, 0, 0.5) 	var smoothing_ratio = 0.2
+@export(int, 4) 			var smoothing_iterations = 1
+@export(String, "View", "Motion", "Object") 	var alignment = "View"
+@export(String, "Idle", "Fixed") 			var prcess_mode = "Idle"
+@export(bool) 			var show_wireframe = false
+@export(Color) 			var wireframe_color = Color(1, 1, 1)
 
 var target
 var path_points = []
@@ -36,9 +36,9 @@ class Point:
 		age -= delta
 
 func _ready():
-	set_as_toplevel(true)
+	set_as_top_level(true)
 	target = get_parent()
-	global_transform = Transform()
+	global_transform = Transform3D()
 	
 func _process(delta):
 	if emit:
@@ -114,7 +114,7 @@ func render():
 		
 		elif alignment == "View":
 			var path_direction = (to_be_rendered[i] - to_be_rendered[i-1]).normalized()
-			var cam_pos = get_viewport().get_camera().get_global_transform().origin
+			var cam_pos = get_viewport().get_camera_3d().get_global_transform().origin
 			normal = (cam_pos - (to_be_rendered[i] + to_be_rendered[i-1])/2).cross(path_direction).normalized()
 		
 		else:
@@ -123,14 +123,14 @@ func render():
 		var rr = 1-factor
 		var width = base_width
 		if width_profile:
-			width = base_width * width_profile.interpolate(rr)
+			width = base_width * width_profile.sample(rr)
 		if width_over_time:
 			var fact = 1 - path_points[mapped_index].age/life_time
-			width = width * width_over_time.interpolate(fact)
+			width = width * width_over_time.sample(fact)
 			
 		var color = Color(1, 1, 1)
 		if color_gradient:
-			color = color_gradient.interpolate(rr)
+			color = color_gradient.sample(rr)
 		
 		# --------------------------RENDERING----------------------------
 		var p1 = to_be_rendered[i] - normal*width/2
@@ -186,9 +186,9 @@ func chaikin_cut(a, b):
 	if (ratio > 0.5): ratio = 1 - ratio;
 	
 	# Find point at a given ratio going from A to B
-	var p1 = a.linear_interpolate(b, ratio)
+	var p1 = a.lerp(b, ratio)
 	# Find point at a given ratio going from B to A
-	var p2 = b.linear_interpolate(a, ratio)
+	var p2 = b.lerp(a, ratio)
 
 	return [p1, p2]
 
