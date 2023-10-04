@@ -1,6 +1,3 @@
 res://default_environment.tres
-res://Menu.tscn
-res://addons/Trail/trail_2d.gd
-res://navigation.gd
-res://addons/Trail/plugin.gd
-res://navmesh.gd
+res://navmesh.tscn
+res://addons/Trail/trail_3d.gd
