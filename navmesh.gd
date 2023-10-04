@@ -1,8 +1,10 @@
-extends Navigation
+extends Spatial
 
 const SPEED = 4.0
 
 var camrot = 0.0
+
+var map_rid
 
 var begin = Vector3()
 var end = Vector3()
@@ -13,6 +15,7 @@ var draw_path = true
 
 func _ready():
 	set_process_input(true)
+	map_rid = get_world().get_navigation_map()
 	m.flags_unshaded = true
 	m.flags_use_point_size = true
 	m.albedo_color = Color.white
@@ -57,9 +60,9 @@ func _input(event):
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 		var from = get_node("CameraBase/Camera").project_ray_origin(event.position)
 		var to = from + get_node("CameraBase/Camera").project_ray_normal(event.position) * 100
-		var p = get_closest_point_to_segment(from, to)
+		var p = NavigationServer.map_get_closest_point_to_segment(map_rid, from, to)
 		
-		begin = get_closest_point(get_node("RobotBase").get_translation())
+		begin = NavigationServer.map_get_closest_point(map_rid, get_node("RobotBase").get_translation())
 		end = p
 		_update_path()
 	
@@ -71,11 +74,11 @@ func _input(event):
 
 
 func _update_path():
-	var p = get_simple_path(begin, end, true)
+	var p = NavigationServer.map_get_path(map_rid, begin, end, true)
 	path = Array(p) # Vector3 array too complex to use, convert to regular array.
 	path.invert()
 	set_process(true)
-	
+
 	if draw_path:
 #		var im = get_node("Draw")
 #		im.set_material_override(m)
@@ -92,7 +95,7 @@ func _update_path():
 		get_node("RobotBase/target").clear_points()
 #		for i in range(p.size()-1, -1, -1):
 		for i in range(p.size()):
-			var normal = get_closest_point_normal(p[i]).normalized()
+			var normal = NavigationServer.map_get_closest_point_normal(map_rid, p[i]).normalized()
 			var offset = normal*0.1
 			var _transform = Transform(Basis(normal), p[i]+offset)
 			get_node("RobotBase/target").add_point(_transform)
