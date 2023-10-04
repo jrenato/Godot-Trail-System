@@ -1,0 +1,4 @@
+res://default_environment.tres
+res://Menu.tscn
+res://addons/Trail/trail_2d.gd
+res://navigation.gd
