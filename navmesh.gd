@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 const SPEED = 4.0
 
@@ -8,17 +8,17 @@ var map_rid
 
 var begin = Vector3()
 var end = Vector3()
-var m = SpatialMaterial.new()
+var m = StandardMaterial3D.new()
 
 var path = []
 var draw_path = true
 
 func _ready():
 	set_process_input(true)
-	map_rid = get_world().get_navigation_map()
+	map_rid = get_world_3d().get_navigation_map()
 	m.flags_unshaded = true
 	m.flags_use_point_size = true
-	m.albedo_color = Color.white
+	m.albedo_color = Color.WHITE
 
 
 func _process(delta):
@@ -34,14 +34,14 @@ func _process(delta):
 				path.remove(path.size() - 1)
 				to_walk -= d
 			else:
-				path[path.size() - 1] = pfrom.linear_interpolate(pto, to_walk / d)
+				path[path.size() - 1] = pfrom.lerp(pto, to_walk / d)
 				to_walk = 0
 		
 		var atpos = path[path.size() - 1]
 		var atdir = to_watch
 		atdir.y = 0
 		
-		var t = Transform()
+		var t = Transform3D()
 		t.origin = atpos
 		t = t.looking_at(atpos + atdir, Vector3.UP)
 		get_node("RobotBase").set_transform(t)
@@ -55,26 +55,26 @@ func _process(delta):
 
 func _input(event):
 	if event.is_action("ui_cancel"):
-		get_tree().change_scene("res://Menu.tscn")
+		get_tree().change_scene_to_file("res://Menu.tscn")
 		
-	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
-		var from = get_node("CameraBase/Camera").project_ray_origin(event.position)
-		var to = from + get_node("CameraBase/Camera").project_ray_normal(event.position) * 100
-		var p = NavigationServer.map_get_closest_point_to_segment(map_rid, from, to)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var from = get_node("CameraBase/Camera3D").project_ray_origin(event.position)
+		var to = from + get_node("CameraBase/Camera3D").project_ray_normal(event.position) * 100
+		var p = NavigationServer3D.map_get_closest_point_to_segment(map_rid, from, to)
 		
-		begin = NavigationServer.map_get_closest_point(map_rid, get_node("RobotBase").get_translation())
+		begin = NavigationServer3D.map_get_closest_point(map_rid, get_node("RobotBase").get_position())
 		end = p
 		_update_path()
 	
 	if event is InputEventMouseMotion:
-		if event.button_mask & (BUTTON_MASK_MIDDLE + BUTTON_MASK_RIGHT):
+		if event.button_mask & (MOUSE_BUTTON_MASK_MIDDLE + MOUSE_BUTTON_MASK_RIGHT):
 			camrot += event.relative.x * 0.005
 			get_node("CameraBase").set_rotation(Vector3(0, camrot, 0))
-			print("Camera Rotation: ", camrot)
+			print("Camera3D Rotation: ", camrot)
 
 
 func _update_path():
-	var p = NavigationServer.map_get_path(map_rid, begin, end, true)
+	var p = NavigationServer3D.map_get_path(map_rid, begin, end, true)
 	path = Array(p) # Vector3 array too complex to use, convert to regular array.
 	path.invert()
 	set_process(true)
@@ -95,13 +95,13 @@ func _update_path():
 		get_node("RobotBase/target").clear_points()
 #		for i in range(p.size()-1, -1, -1):
 		for i in range(p.size()):
-			var normal = NavigationServer.map_get_closest_point_normal(map_rid, p[i]).normalized()
+			var normal = NavigationServer3D.map_get_closest_point_normal(map_rid, p[i]).normalized()
 			var offset = normal*0.1
-			var _transform = Transform(Basis(normal), p[i]+offset)
+			var _transform = Transform3D(Basis(normal), p[i]+offset)
 			get_node("RobotBase/target").add_point(_transform)
 		get_node("RobotBase/target").smooth()
 		get_node("RobotBase/target").render(true)
 
 
 func _on_back_btn_button_down():
-	get_tree().change_scene("res://Menu.tscn")
+	get_tree().change_scene_to_file("res://Menu.tscn")
