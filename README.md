@@ -1,15 +1,9 @@
-![](icon.png)
+An attempt to port [OBKF's Godot Trail System](https://github.com/OBKF/Godot-Trail-System) to Godot 4.1
 
 # Godot Trail System
 Advanced 2D/3D Trail system.
 
-[![GitHub issues](https://img.shields.io/github/issues/OBKF/Godot-Trail-System)](https://github.com/OBKF/Godot-Trail-System/issues) [![GitHub forks](https://img.shields.io/github/forks/OBKF/Godot-Trail-System)](https://github.com/OBKF/Godot-Trail-System/network) [![GitHub stars](https://img.shields.io/github/stars/OBKF/Godot-Trail-System)](https://github.com/OBKF/Godot-Trail-System/stargazers) [![GitHub license](https://img.shields.io/github/license/OBKF/Godot-Trail-System)](https://github.com/OBKF/Godot-Trail-System/blob/master/LICENSE) [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FOBKF_)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2FOBKF%2FGodot-Trail-System)
-
 ![](godot_trail.png)
-
-If you like this plugin and want to thank me with a small donation feel free to do this here:
-
-[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KWUGZUUBASZY4)
 
 ## Description
 Godot Trail System is an advanced trail/ribbon plugin for the Godot Engine similar to Unity3D's system. The plugin offers full features in 3D and basic 2D functionality (it will be updated later). 
