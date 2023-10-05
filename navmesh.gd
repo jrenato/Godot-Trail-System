@@ -31,7 +31,7 @@ func _process(delta):
 			to_watch = (pto - pfrom).normalized()
 			var d = pfrom.distance_to(pto)
 			if d <= to_walk:
-				path.remove(path.size() - 1)
+				path.remove_at(path.size() - 1)
 				to_walk -= d
 			else:
 				path[path.size() - 1] = pfrom.lerp(pto, to_walk / d)
@@ -80,6 +80,8 @@ func _update_path():
 	set_process(true)
 
 	if draw_path:
+		pass
+		# Old code
 #		var im = get_node("Draw")
 #		im.set_material_override(m)
 #		im.clear()
@@ -91,9 +93,8 @@ func _update_path():
 #		for x in p:
 #			im.add_vertex(x)
 #		im.end()
-		
+
 		get_node("RobotBase/target").clear_points()
-#		for i in range(p.size()-1, -1, -1):
 		for i in range(p.size()):
 			var normal = NavigationServer3D.map_get_closest_point_normal(map_rid, p[i]).normalized()
 			var offset = normal*0.1

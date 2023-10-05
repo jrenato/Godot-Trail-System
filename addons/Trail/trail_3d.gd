@@ -6,7 +6,7 @@ Email: o.boukhelf@gmail.com
 Description: Advanced 2D/3D Trail system.
 """
 
-extends Node3D
+extends MeshInstance3D
 
 @export var emit : bool = true
 @export var distance: float = 0.1
@@ -155,8 +155,8 @@ func _render_geometry(source: Array) -> void:
 	var wire_points = []
 	var u := 0.0
 
-	clear()
-	begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, null)
+	mesh.clear()
+	mesh.begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, null)
 	for i in range(1, points_count):
 		var factor :float = float(i)/(points_count-1)
 
@@ -173,15 +173,15 @@ func _render_geometry(source: Array) -> void:
 				u += travel/base_width
 				factor = u
 
-		set_color(_color)
-		set_uv(Vector2(factor, 0))
-		add_vertex(vertices[0])
-		set_uv(Vector2(factor, 1))
-		add_vertex(vertices[1])
+		mesh.set_color(_color)
+		mesh.set_uv(Vector2(factor, 0))
+		mesh.add_vertex(vertices[0])
+		mesh.set_uv(Vector2(factor, 1))
+		mesh.add_vertex(vertices[1])
 
 		if show_wireframe:
 			wire_points += vertices
-	end()
+	mesh.end()
 
 	# For some reason I had to add a second Meshinstance as a child to make the
 	# wireframe to render, normally you can just draw on top.
@@ -215,9 +215,9 @@ func _update_points() -> void:
 	var size_multiplier = [1, 2, 4, 6][smoothing_iterations]
 	var max_points_count :int = segments * size_multiplier
 	if _points.size() > max_points_count:
-		_points.invert()
+		_points.reverse()
 		_points.resize(max_points_count)
-		_points.invert()
+		_points.reverse()
 
 
 func smooth() -> void:
