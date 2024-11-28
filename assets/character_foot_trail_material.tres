@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dc15p80jrqiyv"]
+
+[sub_resource type="Shader" id="3"]
+code = "shader_type spatial;
+
+uniform float emission_strength = 1.0;
+
+void fragment(){
+	
+	ALBEDO = vec3(0.0);
+	EMISSION = COLOR.rgb*emission_strength;
+	ALPHA = COLOR.a;
+}"
+
+[resource]
+render_priority = 0
+shader = SubResource("3")
+shader_parameter/emission_strength = 2.0

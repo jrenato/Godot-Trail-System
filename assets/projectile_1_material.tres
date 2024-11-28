@@ -1,0 +1,54 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://o14qjpog3k6b"]
+
+[ext_resource type="Texture2D" uid="uid://deqktp5e7sq51" path="res://assets/flow_trail.png" id="1_uk6kf"]
+
+[sub_resource type="Shader" id="5"]
+code = "shader_type spatial;
+
+//render_mode unshaded;
+
+uniform vec4 color : source_color = vec4(1.0);
+uniform sampler2D flow_texture :source_color;
+uniform float flow_strength = 1.0;
+uniform float flow_speed = 1.0;
+uniform float dark_edge = 1.0;
+uniform float trail_offset_speed = 1.0;
+uniform float dissolve_flow_speed = 1.0;
+
+
+void fragment(){
+	vec4 _color = COLOR*color;
+	float edge_mask = clamp(UV.y*(1.0-UV.y)*4.0, 0.0, 1.0);
+
+	/// Tail
+//	vec2 uv_tail_offset = UV + vec2(flow_speed*TIME, 0.0);
+//	vec2 tail_distortion = (texture(flow_texture, uv_tail_offset).rg-vec2(0.5))*2.0*flow_strength*(1.0-UV.x);
+//	uv_tail_offset = UV + tail_distortion + vec2(TIME * trail_offset_speed, 0);
+//	float t = texture(flow_texture, uv_tail_offset).b;
+
+	/// Dissolve
+	vec2 uv_d = UV + vec2(dissolve_flow_speed*TIME, 0);
+	float d = texture(flow_texture, uv_d).g + 2.0 * UV.x - 1.0;
+	d = clamp(d*2.0-1.0, 0.0, 1.0);
+//
+//	float tail = t * d * edge_mask;
+
+//	ALBEDO = vec3(tail);
+	ALBEDO = vec3(0.0);
+	EMISSION = COLOR.rgb * d * edge_mask;
+//	EMISSION = _color.rgb * clamp(tail+edge_mask, 0, 1);
+//	ALPHA = _color.a*tail;
+	ALPHA = _color.a*d;
+
+}"
+
+[resource]
+render_priority = 0
+shader = SubResource("5")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flow_strength = 1.0
+shader_parameter/flow_speed = 1.0
+shader_parameter/dark_edge = 1.0
+shader_parameter/trail_offset_speed = 1.0
+shader_parameter/dissolve_flow_speed = 1.0
+shader_parameter/flow_texture = ExtResource("1_uk6kf")
