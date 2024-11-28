@@ -1,0 +1,33 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://c5xepuc54p05k"]
+
+[ext_resource type="Texture2D" uid="uid://dae0pvr7qidvp" path="res://assets/trail_2.png" id="1_j4kr1"]
+
+[sub_resource type="Shader" id="5"]
+code = "shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_toon,specular_disabled,shadows_disabled,ambient_light_disabled;
+uniform vec4 albedo : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+uniform sampler2D texture_emission : source_color;
+uniform float emission_energy = 1.0;
+
+
+void vertex() {
+	if (!OUTPUT_IS_SRGB) {
+		COLOR.rgb = mix( pow((COLOR.rgb + vec3(0.055)) * (1.0 / (1.0 + 0.055)), vec3(2.4)), COLOR.rgb* (1.0 / 12.92), lessThan(COLOR.rgb,vec3(0.04045)) );
+	}
+}
+
+
+void fragment() {
+	ALBEDO = albedo.rgb;
+	vec3 emission_tex = texture(texture_emission, UV).rgb;
+	EMISSION = emission_tex * emission_energy* COLOR.rgb;
+	ALPHA = clamp(emission_tex.r*2.0, 0, 1)*COLOR.a*albedo.a;
+}
+"
+
+[resource]
+render_priority = 0
+shader = SubResource("5")
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/emission_energy = 3.0
+shader_parameter/texture_emission = ExtResource("1_j4kr1")
